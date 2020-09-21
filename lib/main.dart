@@ -21,10 +21,34 @@ class ImageGallery extends StatefulWidget {
 
   Future<File> imageFile;
 
-  pickImageFromGallery(ImageSource source){}
+  pickImageFromGallery(ImageSource source){
+    imageFile = ImagePicker.pickImage(source: source);
+  }
 
   Widget showImage() {
-    return Text("No Image");
+    return FutureBuilder<File> (
+      future: imageFile,
+      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done &&
+        snapshot.data != null) {
+          return Image.file(
+              snapshot.data,
+          width: 300,
+          height: 300,
+          );
+        } else if (snapshot.error != null) {
+          return const Text(
+            'Error Picking Iamge',
+            textAlign: TextAlign.center,
+          );
+        } else {
+          return const Text(
+              'No Image Selected',
+            textAlign: TextAlign.center,
+          );
+        }
+      },
+    );
   }
   @override
   Widget build(BuildContext context) {
